@@ -1,66 +1,41 @@
-import { McpServer } from "@modelcontextprotocol/server";
 import { createMcpHandler } from "agents/mcp/server";
-import { z } from "zod";
+import { handleChat } from "./chat";
+import { createServer } from "./tools";
 
-function createServer() {
-	const server = new McpServer({
-		name: "Authless Calculator",
-		version: "1.0.0",
-	});
-
-	server.registerTool(
-		"add",
-		{ inputSchema: z.object({ a: z.number(), b: z.number() }) },
-		async ({ a, b }) => ({
-			content: [{ type: "text", text: String(a + b) }],
-		}),
-	);
-
-	server.registerTool(
-		"calculate",
-		{
-			inputSchema: z.object({
-				operation: z.enum(["add", "subtract", "multiply", "divide"]),
-				a: z.number(),
-				b: z.number(),
-			}),
-		},
-		async ({ operation, a, b }) => {
-			let result: number;
-			switch (operation) {
-				case "add":
-					result = a + b;
-					break;
-				case "subtract":
-					result = a - b;
-					break;
-				case "multiply":
-					result = a * b;
-					break;
-				case "divide":
-					if (b === 0)
-						return {
-							content: [
-								{
-									type: "text",
-									text: "Error: Cannot divide by zero",
-								},
-							],
-						};
-					result = a / b;
-					break;
-			}
-			return { content: [{ type: "text", text: String(result) }] };
-		},
-	);
-
-	return server;
+interface Env {
+  AI: Ai;
+  ASSETS: Fetcher;
 }
 
-const handler = createMcpHandler(createServer);
+const mcpHandler = createMcpHandler(createServer);
 
 export default {
-	fetch(request: Request, env: Env, ctx: ExecutionContext) {
-		return handler(request, env, ctx);
-	},
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/mcp" || url.pathname.startsWith("/mcp/")) {
+      return mcpHandler(request, env, ctx);
+    }
+
+    if (url.pathname === "/api/chat") {
+      if (request.method !== "POST") {
+        return Response.json(
+          { error: "Method not allowed" },
+          { status: 405, headers: { Allow: "POST" } },
+        );
+      }
+      return handleChat(request, env);
+    }
+
+    if (url.pathname === "/api/health") {
+      return Response.json({
+        ok: true,
+        service: "remote-mcp",
+        endpoints: { chat: "/api/chat", mcp: "/mcp" },
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return env.ASSETS.fetch(request);
+  },
 } satisfies ExportedHandler<Env>;
