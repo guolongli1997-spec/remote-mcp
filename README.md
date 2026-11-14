@@ -48,4 +48,24 @@ Update with this configuration:
 }
 ```
 
+Project Sct:
+
+remote-mcp/
+│
+├── public/
+│   ├── index.html
+│   ├── style.css          [NEW]
+│   ├── app.js             [NEW]
+│   └── logo.svg           [NEW]
+│
+├── src/
+│   ├── index.ts           [REPLACE]
+│   ├── chat.ts            [NEW]
+│   └── tools.ts           [NEW]
+│
+├── wrangler.jsonc         [REPLACE]
+├── package.json           [KEEP]
+└── tsconfig.json          [KEEP]
+
+
 Restart Claude and you should see the tools become available.
