@@ -1,1 +1,59 @@
-ghs
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b100d">
+  <meta name="description" content="A personal AI assistant powered by Cloudflare Workers AI and Model Context Protocol.">
+  <title>Remote MCP AI Assistant</title>
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Remote MCP home">
+        <span class="brand-mark">✳</span>
+        <span>REMOTE<span class="brand-light">MCP</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="status-dot"></span><span id="connection-label">Connecting</span>
+        <a class="icon-link" href="/mcp" target="_blank" rel="noreferrer" title="MCP endpoint" aria-label="Open MCP endpoint">⌘</a>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="welcome" id="welcome">
+        <div class="eyebrow"><span class="sparkle">✦</span> YOUR PERSONAL AI WORKSPACE</div>
+        <h1>Think clearly.<br><span>Build anything.</span></h1>
+        <p class="welcome-copy">A conversational AI assistant with a remote MCP server, running on Cloudflare.</p>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Explain how Model Context Protocol works."><span>⌘</span><b>Understand MCP</b><small>Learn how tools connect to AI</small></button>
+          <button class="suggestion" data-prompt="Give me three practical ideas for using a personal AI assistant."><span>✧</span><b>Explore ideas</b><small>Find a useful place to start</small></button>
+          <button class="suggestion" data-prompt="What can I build with Cloudflare Workers AI?"><span>⌁</span><b>Build with Cloudflare</b><small>Explore Workers AI projects</small></button>
+        </div>
+      </section>
+
+      <section class="chat-panel" aria-label="AI conversation">
+        <div class="messages" id="messages" aria-live="polite">
+          <div class="assistant-message">
+            <div class="avatar">✳</div>
+            <div class="message-content"><div class="message-author">MCP ASSISTANT</div><p>Hello! I'm your AI assistant. Ask me anything to get started.</p></div>
+          </div>
+        </div>
+        <form class="composer" id="chat-form">
+          <label class="sr-only" for="message-input">Message your AI assistant</label>
+          <textarea id="message-input" rows="1" maxlength="8000" placeholder="Message your AI assistant..." required></textarea>
+          <div class="composer-bottom">
+            <span class="composer-hint">AI can make mistakes. Verify important information.</span>
+            <button class="send-button" id="send-button" type="submit" aria-label="Send message"><span>↑</span></button>
+          </div>
+        </form>
+        <div class="footer-note"><span>POWERED BY CLOUDFLARE WORKERS AI</span><span>MCP ENDPOINT <code>/mcp</code></span></div>
+      </section>
+    </main>
+    <footer class="page-footer">A small, open workspace for ideas and tools.</footer>
+  </div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
